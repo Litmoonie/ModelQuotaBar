@@ -29,6 +29,8 @@ GET https://api.deepseek.com/user/balance
 
 The app displays the returned CNY balance. It does not scrape DeepSeek webpages, track token usage, or estimate spending from local client logs.
 
+The Keychain service name is `io.github.litmoonie.modelquotabar`.
+
 ## Network Access
 
 The only network request currently made by the app is the optional DeepSeek balance request described above.

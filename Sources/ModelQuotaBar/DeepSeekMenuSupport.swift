@@ -45,7 +45,7 @@ final class DeepSeekStatusCoordinator: Sendable {
 
 @MainActor
 enum DeepSeekAPIKeyStore {
-    private static let service = "local.model-quota-bar"
+    private static let service = "io.github.litmoonie.modelquotabar"
     private static let account = "deepseek-api-key"
     private static var cachedAPIKey: String?
     private static var hasLoadedAPIKey = false
