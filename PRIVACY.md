@@ -17,6 +17,15 @@ It looks for `payload.rate_limits` entries and uses those values to display:
 
 The app does not upload Codex logs, prompt text, completion text, or session files. It does not read `~/.codex/auth.json`, and it does not call private OpenAI or Codex APIs.
 
+## Local Claude Data
+
+Optional Claude integration receives JSON from a user-configured Claude Code
+status-line command. It stores only the 5-hour and weekly usage percentages,
+their reset times, and the time of capture in a local snapshot at
+`~/Library/Application Support/ModelQuotaBar/claude-quota.json`.
+The app does not persist the full status-line input, read Claude credentials,
+or make network requests to Claude.
+
 ## DeepSeek Data
 
 DeepSeek balance display is optional.

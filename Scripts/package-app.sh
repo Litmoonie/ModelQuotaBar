@@ -27,7 +27,7 @@ cat > "$CONTENTS_DIR/Info.plist" <<'PLIST'
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleShortVersionString</key>
-  <string>0.2.1</string>
+  <string>0.3.0</string>
   <key>CFBundleVersion</key>
   <string>1</string>
   <key>LSMinimumSystemVersion</key>
@@ -40,6 +40,8 @@ cat > "$CONTENTS_DIR/Info.plist" <<'PLIST'
 </plist>
 PLIST
 
-codesign --force --deep --sign - "$APP_DIR"
+SIGNING_IDENTITY="${MODELQUOTABAR_SIGNING_IDENTITY:--}"
+
+codesign --force --deep --sign "$SIGNING_IDENTITY" "$APP_DIR"
 
 echo "Built $APP_DIR"

@@ -24,6 +24,7 @@ This is an unofficial tool. It is not affiliated with OpenAI, Codex, DeepSeek, A
 - Reads Codex quota data from local Codex session logs under `~/.codex/sessions`.
 - Shows Codex 5-hour quota in the macOS menu bar.
 - Shows Codex weekly quota in the menu.
+- Optionally shows Claude subscription quota alongside Codex.
 - Optionally reads DeepSeek account balance through the official `/user/balance` API.
 - Stores the DeepSeek API key in macOS Keychain.
 - Does not upload local Codex logs or prompt content.
@@ -56,6 +57,41 @@ open dist/ModelQuotaBar.app
 ```
 
 The package script uses ad-hoc signing. This is enough for local builds, but downloaded builds may still be blocked by macOS Gatekeeper unless they are Developer ID signed and notarized.
+
+For a stable signing identity across rebuilds, package with the same
+Apple or local code-signing certificate each time:
+
+```bash
+MODELQUOTABAR_SIGNING_IDENTITY="Apple Development: Your Name" Scripts/package-app.sh
+```
+
+## Claude Setup
+
+With Claude Code signed in to an eligible Claude subscription, add the
+following `statusLine` entry to your existing `~/.claude/settings.json`.
+Replace the example path with the absolute path to your packaged app.
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "'/absolute/path/to/ModelQuotaBar.app/Contents/MacOS/ModelQuotaBar' --capture-claude-quota"
+  }
+}
+```
+
+If you already have a status line, keep it and have its script forward the
+same stdin JSON to the command above as well. The capture command is silent.
+
+After Claude Code receives an API response, the menu bar can show
+`CX 72 · CC 58` (both 5-hour remaining percentages). The menu uses full names
+and includes weekly percentages. A missing or expired window shows `--`.
+The app reads the latest local snapshot every 10 seconds, and Claude Code
+supplies updates during status-line runs. See the
+[Claude Code status-line documentation](https://code.claude.com/docs/en/statusline#rate-limit-usage).
+
+To disable the integration, remove the capture command from your status line and
+delete `~/Library/Application Support/ModelQuotaBar/claude-quota.json`.
 
 ## DeepSeek Setup
 

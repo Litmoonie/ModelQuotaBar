@@ -89,8 +89,8 @@ public final class RateLimitReader {
         var files: [(url: URL, modified: Date)] = []
 
         while let fileURL = enumerator?.nextObject() as? URL {
-            let values = try fileURL.resourceValues(forKeys: resourceKeys)
-            guard values.isRegularFile == true else { continue }
+            guard let values = try? fileURL.resourceValues(forKeys: resourceKeys),
+                  values.isRegularFile == true else { continue }
             guard fileURL.pathExtension.lowercased() == "jsonl" || fileURL.pathExtension.lowercased() == "json" else {
                 continue
             }
@@ -134,6 +134,7 @@ public final class RateLimitReader {
                   let timestamp = dateValue(json["timestamp"]),
                   let payload = json["payload"] as? [String: Any],
                   let rateLimits = payload["rate_limits"] as? [String: Any],
+                  rateLimits["limit_id"] as? String ?? "codex" == "codex",
                   let primary = rateLimits["primary"] as? [String: Any],
                   let primaryWindow = rateLimitWindow(from: primary, eventTimestamp: timestamp, now: now) else {
                 continue
@@ -162,7 +163,7 @@ public final class RateLimitReader {
 }
 
 private func rateLimitWindow(from dictionary: [String: Any], eventTimestamp: Date, now: Date) -> RateLimitWindow? {
-    guard let usedPercent = doubleValue(dictionary["used_percent"]) else {
+    guard let usedPercent = doubleValue(dictionary["used_percent"]), usedPercent.isFinite else {
         return nil
     }
 
